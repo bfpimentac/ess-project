@@ -7,6 +7,50 @@ import { useRouter } from 'next/navigation';
 import { DeliveryPersonStyles } from './styles';
 import { ApiDeliveryPerson } from '@/services/deliveryPerson';
 
+// Novo componente AddressDetails para exibir os detalhes do endereço
+const AddressDetails = ({ address }: { address: any }) => {
+  return (
+    <div style={{ marginTop: '10px', backgroundColor: 'white', padding: '10px', borderRadius: '8px', width: '400px', marginLeft:'15px'}}>
+      <table>
+        <tbody>
+          <tr>
+            <td>CEP:</td>
+            <td>{address?.postalCode}</td>
+          </tr>
+          <tr>
+            <td>Rua:</td>
+            <td>{address?.street}</td>
+          </tr>
+          <tr>
+            <td>Cidade:</td>
+            <td>{address?.city}</td>
+          </tr>
+          <tr>
+            <td>Bairro:</td>
+            <td>{address?.district}</td>
+          </tr>
+          <tr>
+            <td>Número:</td>
+            <td>{address?.number}</td>
+          </tr>
+          <tr>
+            <td>Estado:</td>
+            <td>{address?.state}</td>
+          </tr>
+          <tr>
+            <td>Complemento:</td>
+            <td>{address?.complement}</td>
+          </tr>
+          <tr>
+            <td>Referência:</td>
+            <td>{address?.reference}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function DeliveryPerson() {
   const [showDiv, setShowDiv] = useState(false);
   const [cpfValue, setCpfValue] = useState(""); 
@@ -22,33 +66,32 @@ export default function DeliveryPerson() {
 
   const handleArrowClick = async () => {
     try {
-     
       const example = await ApiDeliveryPerson.getExample(cpfValue);
       setGetExample(example);
     } catch (error) {
-        setErrorType("Usuario nao encontrado");
-        setErrorPopupOpen(true);
+      setErrorType("Usuário não encontrado");
+      setErrorPopupOpen(true);
     }
   };
 
   const AddButtonClick = () => {
     router.push("/newDeliveryPerson");
   };
+
   const EditButtonClick = () => {
     localStorage.setItem('cpfValue', cpfValue);
     router.push("/editDeliveryPerson");
   };
+
   const toggleEndereco = () => {
     setEnderecoOpen(!enderecoOpen);
   };
 
   const handleChangeCPF = (e: React.ChangeEvent<HTMLInputElement>) => {
-    
     setCpfValue(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  
     if (e.key === 'Enter') {
       handleArrowClick();
     }
@@ -68,7 +111,6 @@ export default function DeliveryPerson() {
             alt="Ícone de pesquisa"
             width={40}
             height={40}
-           
             style={DeliveryPersonStyles.searchIcon}
           />
         </div>
@@ -83,17 +125,16 @@ export default function DeliveryPerson() {
               style={DeliveryPersonStyles.input}
               aria-label='pesquisa_cpf'
             />
-            <div >
-            <Image
-              src={Arrow}
-              alt="seta"
-              width={40}
-              height={40}
-              onClick={handleArrowClick} 
-              style={DeliveryPersonStyles.searchIcon}
-            />
+            <div>
+              <Image
+                src={Arrow}
+                alt="seta"
+                width={40}
+                height={40}
+                onClick={handleArrowClick} 
+                style={DeliveryPersonStyles.searchIcon}
+              />
             </div>
-          
           </div>
         )}
       </div>
@@ -135,76 +176,42 @@ export default function DeliveryPerson() {
             </div>
           </div>
           {/* Campo de Endereço */}
-          <div style={{ padding: '0 25px' }}>
+          <div>
+          <div style={{ padding: '0 25px', marginTop: '20px' }}>
             <div style={{ padding: '5px' }}>
-              <text>Endereco</text>
+              <text>Endereço</text>
             </div>
           </div>
-          <div
-            style={{ ...DeliveryPersonStyles.searchDiv, cursor: 'pointer' }}
-            onClick={toggleEndereco}
-          ></div>
-          {/* Detalhes do endereço */}
+          <div style={DeliveryPersonStyles.searchDiv} onClick={toggleEndereco}>
+              
+          </div>
+          </div>
+         
           {enderecoOpen && (
-            <div style={{ marginTop: '10px', backgroundColor: 'white', padding: '10px', borderRadius: '8px', width: '400px', marginLeft:'15px'}}>
-              <table>
-                <tbody>
-                <tr>
-                    <td>CEP:</td>
-                    <td>{getExample?.address?.postalCode}</td>
-                  </tr>
-                  <tr>
-                    <td>Rua:</td>
-                    <td>{getExample?.address?.street}</td>
-                  </tr>
-                  <tr>
-                    <td>Cidade:</td>
-                    <td>{getExample?.address?.city}</td>
-                  </tr>
-                  <tr>
-                    <td>Bairro:</td>
-                    <td>{getExample?.address?.district}</td>
-                  </tr>
-                  <tr>
-                    <td>Número:</td>
-                    <td>{getExample?.address?.number}</td>
-                  </tr>
-                  <tr>
-                    <td>Estado:</td>
-                    <td>{getExample?.address?.state}</td>
-                  </tr>
-                  <tr>
-                    <td>Complemento:</td>
-                    <td>{getExample?.address?.complement}</td>
-                  </tr>
-                  <tr>
-                    <td>Referência:</td>
-                    <td>{getExample?.address?.reference}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div
+           
+              
+            >
+              <AddressDetails address={getExample.address} /> {/* Renderizando o componente AddressDetails */}
             </div>
           )}
-
-         
         </div>
-        
-      )} 
-      { getExample && (
- <div style={DeliveryPersonStyles.EditButtonContainer}>
- <div style={DeliveryPersonStyles.EditButton}onClick={EditButtonClick} aria-label='editar_dados'>
-   <text style={DeliveryPersonStyles.EditButtonText}>Editar Dados</text>
- </div>
- </div>
+      )}
 
-      )
+      {getExample && (
+        <div style={DeliveryPersonStyles.EditButtonContainer}>
+          <div style={DeliveryPersonStyles.EditButton} onClick={EditButtonClick} aria-label='editar_dados'>
+            <text style={DeliveryPersonStyles.EditButtonText}>Editar Dados</text>
+          </div>
+        </div>
+      )}
 
-      }
       <div style={DeliveryPersonStyles.addButtonContainer}>
         <div style={DeliveryPersonStyles.addButton} onClick={AddButtonClick}>
           <text style={DeliveryPersonStyles.addButtonText}>+</text>
         </div>
       </div>
+
       {errorPopupOpen && (
         <div style={DeliveryPersonStyles.confirmPopup}>
           <div style={DeliveryPersonStyles.confirmPopupInner}>
